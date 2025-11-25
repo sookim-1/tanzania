@@ -12,216 +12,85 @@
         }
 
         body {
-            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
         }
 
-        .widget-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border-radius: 24px;
-            padding: 32px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            min-width: 320px;
+        .widget {
+            text-align: left;
+            padding: 40px;
         }
 
-        .country-flag {
-            font-size: 48px;
+        .title {
+            color: #888888;
+            font-size: 18px;
+            font-weight: 400;
             margin-bottom: 8px;
         }
 
-        .country-name {
-            color: #e94560;
-            font-size: 14px;
+        .time {
+            color: #1a1a1a;
+            font-size: 72px;
             font-weight: 600;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            margin-bottom: 4px;
+            line-height: 1.1;
         }
 
-        .city-name {
-            color: #ffffff;
-            font-size: 24px;
-            font-weight: 300;
-            margin-bottom: 24px;
-            opacity: 0.9;
-        }
-
-        .time-display {
-            color: #ffffff;
-            font-size: 64px;
-            font-weight: 200;
-            letter-spacing: 2px;
-            margin-bottom: 8px;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .seconds {
+        .time .period {
             font-size: 32px;
-            opacity: 0.6;
-            vertical-align: super;
+            font-weight: 500;
+            margin-left: 4px;
         }
 
-        .date-display {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 16px;
-            margin-bottom: 16px;
-        }
-
-        .timezone-info {
-            display: flex;
-            justify-content: center;
-            gap: 16px;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .timezone-badge {
-            background: rgba(233, 69, 96, 0.2);
-            color: #e94560;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .utc-badge {
-            background: rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-        }
-
-        .city-selector {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-bottom: 24px;
-            flex-wrap: wrap;
-        }
-
-        .city-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: rgba(255, 255, 255, 0.7);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 13px;
-            transition: all 0.3s ease;
-        }
-
-        .city-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff;
-        }
-
-        .city-btn.active {
-            background: #e94560;
-            border-color: #e94560;
-            color: #ffffff;
-        }
-
-        .day-night-indicator {
-            display: inline-block;
-            margin-left: 8px;
-            font-size: 20px;
+        .date {
+            color: #888888;
+            font-size: 18px;
+            font-weight: 400;
+            margin-top: 8px;
         }
     </style>
 </head>
 <body>
-    <div class="widget-container">
-        <div class="country-flag">🇹🇿</div>
-        <div class="country-name">Tanzania</div>
-        
-        <div class="city-selector">
-            <button class="city-btn active" data-city="Dar es Salaam">다르에스살람</button>
-            <button class="city-btn" data-city="Dodoma">도도마</button>
-            <button class="city-btn" data-city="Arusha">아루샤</button>
-            <button class="city-btn" data-city="Zanzibar">잔지바르</button>
-        </div>
-
-        <div class="city-name" id="cityName">Dar es Salaam <span class="day-night-indicator" id="dayNight">🌙</span></div>
-        
-        <div class="time-display" id="timeDisplay">00:00<span class="seconds" id="seconds">:00</span></div>
-        
-        <div class="date-display" id="dateDisplay">2025년 1월 1일 수요일</div>
-        
-        <div class="timezone-info">
-            <span class="timezone-badge">EAT</span>
-            <span class="utc-badge">UTC+3</span>
-        </div>
+    <div class="widget">
+        <div class="title">탄자니아 현재 시간</div>
+        <div class="time" id="time">12:00 <span class="period">PM</span></div>
+        <div class="date" id="date">Tuesday, November 25, 2025</div>
     </div>
 
     <script>
-        const cities = {
-            'Dar es Salaam': '다르에스살람',
-            'Dodoma': '도도마',
-            'Arusha': '아루샤',
-            'Zanzibar': '잔지바르'
-        };
-
-        let currentCity = 'Dar es Salaam';
-
         function updateTime() {
             const now = new Date();
             
-            // Tanzania is UTC+3 (East Africa Time)
-            const tanzaniaTime = new Date(now.toLocaleString('en-US', { timeZone: 'Africa/Dar_es_Salaam' }));
+            // Tanzania Time (UTC+3)
+            const options = { timeZone: 'Africa/Dar_es_Salaam' };
+            const tanzaniaTime = new Date(now.toLocaleString('en-US', options));
             
-            const hours = tanzaniaTime.getHours().toString().padStart(2, '0');
+            let hours = tanzaniaTime.getHours();
             const minutes = tanzaniaTime.getMinutes().toString().padStart(2, '0');
-            const seconds = tanzaniaTime.getSeconds().toString().padStart(2, '0');
+            const period = hours >= 12 ? 'PM' : 'AM';
             
-            document.getElementById('timeDisplay').innerHTML = 
-                `${hours}:${minutes}<span class="seconds">:${seconds}</span>`;
+            // 12시간 형식
+            hours = hours % 12;
+            hours = hours ? hours : 12;
             
-            // Date formatting in Korean
-            const options = { 
+            document.getElementById('time').innerHTML = 
+                `${hours}:${minutes} <span class="period">${period}</span>`;
+            
+            // 날짜 (영어)
+            const dateOptions = { 
+                weekday: 'long', 
                 year: 'numeric', 
                 month: 'long', 
-                day: 'numeric', 
-                weekday: 'long'
+                day: 'numeric',
+                timeZone: 'Africa/Dar_es_Salaam'
             };
-            const dateStr = tanzaniaTime.toLocaleDateString('ko-KR', options);
-            document.getElementById('dateDisplay').textContent = dateStr;
-            
-            // Day/Night indicator (6AM - 6PM is day)
-            const hour = tanzaniaTime.getHours();
-            const isDaytime = hour >= 6 && hour < 18;
-            document.getElementById('dayNight').textContent = isDaytime ? '☀️' : '🌙';
+            const dateStr = now.toLocaleDateString('en-US', dateOptions);
+            document.getElementById('date').textContent = dateStr;
         }
 
-        function setCity(cityName) {
-            currentCity = cityName;
-            document.getElementById('cityName').innerHTML = 
-                `${cityName} <span class="day-night-indicator" id="dayNight">🌙</span>`;
-            
-            document.querySelectorAll('.city-btn').forEach(btn => {
-                btn.classList.remove('active');
-                if (btn.dataset.city === cityName) {
-                    btn.classList.add('active');
-                }
-            });
-            
-            updateTime();
-        }
-
-        // City button click handlers
-        document.querySelectorAll('.city-btn').forEach(btn => {
-            btn.addEventListener('click', () => setCity(btn.dataset.city));
-        });
-
-        // Update time every second
         updateTime();
         setInterval(updateTime, 1000);
     </script>
